@@ -1,5 +1,6 @@
 package com.example.schedule.dto;
 
+import com.example.schedule.entity.Schedule;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,6 +27,15 @@ public class ScheduleResponseDto {
         this.password = password;
         this.createdAt = createdAt.toLocalDate();  // LocalDate로 변환
         this.updatedAt = updatedAt.toLocalDate();  // LocalDate로 변환
+    }
+
+    public ScheduleResponseDto (Schedule schedule) {
+        this.id = schedule.getId();
+        this.task = schedule.getTask();
+        this.author = schedule.getAuthor();
+        this.password = schedule.getPassword();
+        this.createdAt = schedule.getCreatedAt();
+        this.updatedAt = schedule.getUpdatedAt();
     }
 
 }

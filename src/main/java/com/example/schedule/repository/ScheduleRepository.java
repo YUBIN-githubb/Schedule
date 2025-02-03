@@ -6,4 +6,5 @@ import com.example.schedule.entity.Schedule;
 
 public interface ScheduleRepository {
     ScheduleResponseDto saveSchedule(Schedule schedule);
+    Schedule findScheduleByIdOrElseThrow(Long id);
 }

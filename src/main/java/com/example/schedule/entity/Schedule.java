@@ -22,4 +22,6 @@ public class Schedule {
         this.author = author;
         this.password = password;
     }
+
 }
+
