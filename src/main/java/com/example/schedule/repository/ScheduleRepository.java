@@ -10,4 +10,5 @@ public interface ScheduleRepository {
     ScheduleResponseDto saveSchedule(Schedule schedule);
     Schedule findScheduleByIdOrElseThrow(Long id);
     List<ScheduleResponseDto> findAllSchedules(String updatedAt, String author);
+    int updateSchedule(Long id, String task, String author);
 }
