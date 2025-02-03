@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/schedules")
@@ -30,6 +32,15 @@ public class ScheduleController {
     @GetMapping("/{id}")
     public ResponseEntity<ScheduleResponseDto> findScheduleById(@PathVariable Long id) {
         return new ResponseEntity<>(scheduleService.findScheduleById(id), HttpStatus.OK);
+    }
+
+    //일정 전체 조회
+    @GetMapping
+    public ResponseEntity<List<ScheduleResponseDto>> findAllSchedules(
+            @RequestParam(required = false) String updatedAt,
+            @RequestParam(required = false) String author
+    ) {
+        return new ResponseEntity<>(scheduleService.findAllSchedules(updatedAt, author), HttpStatus.OK);
     }
 
 }

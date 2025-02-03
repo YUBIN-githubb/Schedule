@@ -14,6 +14,7 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,49 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
     public Schedule findScheduleByIdOrElseThrow(Long id) {
         List<Schedule> result = jdbcTemplate.query("select * from schedule where id = ?", scheduleRowMapperV2(), id);
         return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "id가 존재하지 않습니다."));
+    }
+
+    @Override
+    public List<ScheduleResponseDto> findAllSchedules(String updatedAt, String author) {
+        String sql = "SELECT * FROM schedule";
+
+        List<Object> params = new ArrayList<>();
+        List<String> conditions = new ArrayList<>();
+
+        if (updatedAt != null) {
+            conditions.add("DATE(updated_at) = ?");
+            params.add(updatedAt);
+        }
+
+        if (author != null) {
+            conditions.add("author = ?");
+            params.add(author);
+        }
+
+        if(!conditions.isEmpty()) {
+            sql += " WHERE " + String.join(" AND ", conditions);
+        }
+
+        sql += " ORDER BY updated_at DESC";
+
+        return jdbcTemplate.query(sql, ScheduleRowMapper(), params.toArray());
+    }
+
+    private RowMapper<ScheduleResponseDto> ScheduleRowMapper() {
+        return new RowMapper<ScheduleResponseDto>() {
+
+            @Override
+            public ScheduleResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new ScheduleResponseDto(
+                        rs.getLong("id"),
+                        rs.getString("task"),
+                        rs.getString("author"),
+                        rs.getString("password"),
+                        rs.getTimestamp("created_at").toLocalDateTime(),
+                        rs.getTimestamp("updated_at").toLocalDateTime()
+                );
+            }
+        };
     }
 
     private RowMapper<Schedule> scheduleRowMapperV2() {
