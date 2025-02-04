@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -51,4 +52,14 @@ public class ScheduleController {
         return new ResponseEntity<>(scheduleService.updateSchedule(id, dto.getTask(), dto.getAuthor(), dto.getPassword()), HttpStatus.OK);
     }
 
+    //일정 삭제
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteSchedule(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> requestBody
+    ) {
+        String password = requestBody.get("password"); // "password" 키로 값 추출
+        scheduleService.deleteSchedule(id, password);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

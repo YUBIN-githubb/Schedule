@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
@@ -65,5 +66,29 @@ public class ScheduleServiceImpl implements ScheduleService {
         Schedule updatedSchedule = scheduleRepository.findScheduleByIdOrElseThrow(id);
 
         return new ScheduleResponseDto(updatedSchedule);
+    }
+
+    @Override
+    public void deleteSchedule(Long id, String password) {
+
+        if (password == null || password.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "password가 입력되어야 합니다.");
+        }
+
+        Schedule schedule = scheduleRepository.findScheduleByIdOrElseThrow(id);
+        if(!Objects.equals(schedule.getPassword(), password)) {
+            System.out.println("2");
+            System.out.println("원래 비밀번호 = " + schedule.getPassword());
+            System.out.println("입력된 비밀번호 = " + password);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "password가 일치하지 않습니다.");
+        }
+
+        int deletedRow = scheduleRepository.deleteSchedule(id);
+
+        if (deletedRow == 0) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "id가 존재하지 않습니다.");
+        }
+
+
     }
 }

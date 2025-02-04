@@ -15,18 +15,18 @@ public class ScheduleResponseDto {
     private String task;
     private String author;
     private String password;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate createdAt;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate updatedAt;
 
-    public ScheduleResponseDto(Long id, String task, String author, String password, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public ScheduleResponseDto(Long id, String task, String author, String password, LocalDate createdAt, LocalDate updatedAt) {
         this.id = id;
         this.task = task;
         this.author = author;
         this.password = password;
-        this.createdAt = createdAt.toLocalDate();  // LocalDate로 변환
-        this.updatedAt = updatedAt.toLocalDate();  // LocalDate로 변환
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public ScheduleResponseDto (Schedule schedule) {

@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +34,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.withTableName("schedule").usingGeneratedKeyColumns("id");
 
-        LocalDateTime now = LocalDateTime.now(); // 현재 시간 생성
+        LocalDate now = LocalDate.now();// 현재 시간 생성
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("task", schedule.getTask());
@@ -86,6 +87,11 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
         return jdbcTemplate.update("update schedule set task = ?, author = ? where id = ?", task, author, id);
     }
 
+    @Override
+    public int deleteSchedule(Long id) {
+        return jdbcTemplate.update("delete from schedule where id = ?", id);
+    }
+
     private RowMapper<ScheduleResponseDto> ScheduleRowMapper() {
         return new RowMapper<ScheduleResponseDto>() {
 
@@ -96,8 +102,8 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
                         rs.getString("task"),
                         rs.getString("author"),
                         rs.getString("password"),
-                        rs.getTimestamp("created_at").toLocalDateTime(),
-                        rs.getTimestamp("updated_at").toLocalDateTime()
+                        rs.getDate("created_at").toLocalDate(),
+                        rs.getDate("updated_at").toLocalDate()
                 );
             }
         };
